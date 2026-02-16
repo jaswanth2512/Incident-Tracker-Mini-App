@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { incidentApi } from '../services/api';
 import { Incident, IncidentFilters, PaginationParams, Severity, Status } from '../types/incident';
@@ -25,6 +25,10 @@ const IncidentList = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [total, setTotal] = useState(0);
 
+  // Track previous filter values to detect actual changes
+  const prevFiltersRef = useRef<IncidentFilters>({});
+
+  // Fetch incidents when pagination or filters change
   useEffect(() => {
     const fetchIncidents = async () => {
       try {
@@ -43,7 +47,16 @@ const IncidentList = () => {
     };
 
     fetchIncidents();
-  }, [pagination, filters]);
+  }, [
+    pagination.page,
+    pagination.limit,
+    pagination.sortBy,
+    pagination.sortOrder,
+    filters.status,
+    filters.severity,
+    filters.service,
+    filters.search
+  ]);
 
   const handlePageChange = (newPage: number) => {
     setPagination(prev => ({ ...prev, page: newPage }));
@@ -59,13 +72,33 @@ const IncidentList = () => {
   };
 
   const handleFilterChange = (newFilters: IncidentFilters) => {
+    // Check if filters actually changed
+    const filtersChanged =
+      prevFiltersRef.current.status !== newFilters.status ||
+      prevFiltersRef.current.severity !== newFilters.severity ||
+      prevFiltersRef.current.service !== newFilters.service;
+
+    prevFiltersRef.current = newFilters;
     setFilters(newFilters);
-    setPagination(prev => ({ ...prev, page: 1 })); // Reset to first page
+
+    // Only reset to page 1 if filters actually changed
+    if (filtersChanged && pagination.page !== 1) {
+      setPagination(prev => ({ ...prev, page: 1 }));
+    }
   };
 
   const handleSearch = (search: string) => {
-    setFilters(prev => ({ ...prev, search }));
-    setPagination(prev => ({ ...prev, page: 1 })); // Reset to first page
+    // Check if search actually changed
+    const searchChanged = prevFiltersRef.current.search !== search;
+
+    const newFilters = { ...filters, search };
+    prevFiltersRef.current = newFilters;
+    setFilters(newFilters);
+
+    // Only reset to page 1 if search actually changed
+    if (searchChanged && pagination.page !== 1) {
+      setPagination(prev => ({ ...prev, page: 1 }));
+    }
   };
 
   const handleRowClick = (incident: Incident) => {
