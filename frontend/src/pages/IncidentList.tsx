@@ -43,7 +43,7 @@ const IncidentList = () => {
     };
 
     fetchIncidents();
-  }, [pagination.page, pagination.limit, pagination.sortBy, pagination.sortOrder, filters.status, filters.severity, filters.service, filters.search]);
+  }, [pagination, filters]);
 
   const handlePageChange = (newPage: number) => {
     setPagination(prev => ({ ...prev, page: newPage }));
@@ -52,6 +52,7 @@ const IncidentList = () => {
   const handleSort = (sortBy: string) => {
     setPagination(prev => ({
       ...prev,
+      page: 1, // Reset to first page when sorting
       sortBy,
       sortOrder: prev.sortBy === sortBy && prev.sortOrder === 'desc' ? 'asc' : 'desc'
     }));
