@@ -63,21 +63,58 @@ const generateIncidents = (count: number) => {
   const now = new Date();
   const sixMonthsAgo = new Date(now.getTime() - 180 * 24 * 60 * 60 * 1000);
 
-  for (let i = 0; i < count; i++) {
+  // Generate historical incidents (last 6 months)
+  for (let i = 0; i < count - 10; i++) {
     const createdAt = generateRandomDate(sixMonthsAgo, now);
     const updatedAt = new Date(createdAt.getTime() + Math.random() * (now.getTime() - createdAt.getTime()));
-    
+
     const service = services[Math.floor(Math.random() * services.length)];
     const titleTemplate = titleTemplates[Math.floor(Math.random() * titleTemplates.length)];
-    
+
     const severities = Object.values(Severity);
     const statuses = Object.values(Status);
-    
+
     const severity = severities[Math.floor(Math.random() * severities.length)];
     const status = statuses[Math.floor(Math.random() * statuses.length)];
-    
+
     const owner = owners[Math.floor(Math.random() * owners.length)];
-    const summary = Math.random() > 0.2 
+    const summary = Math.random() > 0.2
+      ? summaryTemplates[Math.floor(Math.random() * summaryTemplates.length)]
+      : undefined;
+
+    incidents.push({
+      title: `${titleTemplate} ${service}`,
+      service,
+      severity,
+      status,
+      owner: owner || undefined,
+      summary,
+      createdAt,
+      updatedAt
+    });
+  }
+
+  // Generate recent incidents (today after 5 PM)
+  const today = new Date();
+  today.setHours(17, 0, 0, 0); // 5 PM today
+  const endOfDay = new Date();
+  endOfDay.setHours(23, 59, 59, 999);
+
+  for (let i = 0; i < 10; i++) {
+    const createdAt = generateRandomDate(today, endOfDay);
+    const updatedAt = new Date(createdAt.getTime() + Math.random() * (endOfDay.getTime() - createdAt.getTime()));
+
+    const service = services[Math.floor(Math.random() * services.length)];
+    const titleTemplate = titleTemplates[Math.floor(Math.random() * titleTemplates.length)];
+
+    const severities = Object.values(Severity);
+    const statuses = Object.values(Status);
+
+    const severity = severities[Math.floor(Math.random() * severities.length)];
+    const status = statuses[Math.floor(Math.random() * statuses.length)];
+
+    const owner = owners[Math.floor(Math.random() * owners.length)];
+    const summary = Math.random() > 0.2
       ? summaryTemplates[Math.floor(Math.random() * summaryTemplates.length)]
       : undefined;
 
