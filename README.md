@@ -174,11 +174,51 @@ PATCH /api/incidents/:id
 ## Project Structure
 
 ```
-Incident Tracker/
+incident-tracker-mini-app/
 ├── backend/
-│   ├── src/          # TypeScript source
-│   └── dist/         # Compiled JavaScript
-└── frontend/
-    └── src/          # React components
+│   ├── src/
+│   │   ├── config/
+│   │   │   └── database.ts          # MongoDB connection
+│   │   ├── controllers/
+│   │   │   └── incidentController.ts # Business logic
+│   │   ├── models/
+│   │   │   └── Incident.ts          # Mongoose schema
+│   │   ├── routes/
+│   │   │   └── incidentRoutes.ts    # API routes
+│   │   ├── scripts/
+│   │   │   └── seed.ts              # Database seeding
+│   │   └── server.ts                # Express server
+│   ├── dist/                        # Compiled JavaScript
+│   ├── .env                         # Environment variables
+│   ├── package.json
+│   └── tsconfig.json
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Filters.tsx          # Filter controls
+│   │   │   ├── IncidentTable.tsx    # Incident table
+│   │   │   ├── Layout.tsx           # App layout
+│   │   │   ├── Pagination.tsx       # Pagination controls
+│   │   │   └── SearchBar.tsx        # Search input
+│   │   ├── pages/
+│   │   │   ├── CreateIncident.tsx   # Create incident page
+│   │   │   ├── IncidentDetail.tsx   # Incident detail page
+│   │   │   └── IncidentList.tsx     # Incident list page
+│   │   ├── services/
+│   │   │   └── api.ts               # API client
+│   │   ├── types/
+│   │   │   └── incident.ts          # TypeScript types
+│   │   ├── App.tsx                  # Main app component
+│   │   ├── main.tsx                 # Entry point
+│   │   └── index.css                # Global styles
+│   ├── public/
+│   ├── index.html
+│   ├── package.json
+│   ├── vite.config.ts
+│   └── tsconfig.json
+│
+├── .gitignore
+└── README.md
 ```
 
